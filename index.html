@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Dispatch a grid battery through volatile hourly prices. Compare a rolling forecast, a threshold rule, and a perfect-foresight bound.">
+  <title>Battery Dispatch Lab</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="battery">
+<main>
+  <header><span>Power systems / dispatch</span><a href="https://github.com/alexsergeev1/battery-dispatch-lab">Source on GitHub ↗</a></header>
+  <section class="hero"><h1>Battery Dispatch Lab</h1><p>Dispatch a grid battery through volatile hourly prices. Compare a rolling forecast, a threshold rule, and a perfect-foresight bound.</p></section>
+  <div class="workspace">
+    <form class="rail panel" id="controls">
+      <h2>Scenario</h2>
+      <label>Market regime<select name="regime"><option value="normal">Typical day</option><option value="solar">Solar surplus</option><option value="scarcity">Scarcity and derating</option></select></label><label>Seed<input name="seed" type="number" min="0" max="1000000" value="42" required></label><label>Storage capacity (MWh)<select name="capacity"><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label><label>Grid power limit (MW)<select name="power"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label><label>Forecast window (hours)<select name="horizon"><option>4</option><option>8</option><option selected>12</option><option>24</option></select></label><label>Wear cost ($/MWh moved)<input name="wear" type="number" min="0" max="40" value="5" step="1" required></label>
+      <button class="primary" type="submit">Run scenario</button>
+      <button id="benchmark" type="button">Benchmark 64 scenarios</button>
+      <p class="status" id="status" role="status"></p>
+    </form>
+    <div class="results">
+      <section class="metrics" aria-label="Performance metrics">
+        <div class="metric"><span id="label0"></span><strong id="value0"></strong></div>
+        <div class="metric"><span id="label1"></span><strong id="value1"></strong></div>
+        <div class="metric"><span id="label2"></span><strong id="value2"></strong></div>
+      </section>
+      <section class="panel">
+        <div class="plot-header"><h2>Scenario trace</h2><select id="strategy" aria-label="Strategy"></select></div>
+        <div class="legend" id="legend"></div>
+        <svg id="plot" class="plot" viewBox="0 0 820 245" role="img" aria-label="Scenario results chart"></svg>
+        <div class="plot-header"><span class="unit">View</span><select id="chart" aria-label="Chart view"><option value="dispatch">Battery dispatch</option><option value="market">Market price</option></select></div>
+      </section>
+      <section class="panel" id="benchPanel" hidden>
+        <div class="plot-header"><h2>Paired benchmark</h2><button id="exportBench" style="width:auto">Export CSV</button></div>
+        <div class="scroll"><table id="bench"><thead></thead><tbody></tbody></table></div>
+        <p class="note">The tail mean averages the seven worst outcomes. Win rate compares each strategy with the baseline on the same scenarios.</p>
+      </section>
+      <section class="panel">
+        <div class="plot-header"><h2>Decision audit</h2><button id="export" style="width:auto">Export CSV</button></div>
+        <div class="scroll"><table id="decisions"><thead></thead><tbody></tbody></table></div>
+      </section>
+      <details class="panel"><summary>Model assumptions</summary><p class="note">Hourly synthetic prices, 94% charge and discharge efficiency, and 0.25 MWh storage increments. Net value includes energy cash, wear and a terminal inventory adjustment at $40/MWh. Future prices and derating are hidden from the rolling strategy. The oracle sees the full realized day.</p></details>
+    </div>
+  </div>
+</main>
+<script type="module" src="./app.mjs"></script>
+</body>
+</html>
